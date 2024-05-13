@@ -64,13 +64,13 @@ blueprint:
           domain:
           - select
           multiple: false
-    fan_switch:
-      name: Fan Switch Entity
-      description: Switch Entity to toggle the exhause fan
+    fan_entity:
+      name: Fan Entity
+      description: Fan Entity to toggle the exhause fan
       selector:
         entity:
           domain:
-          - switch
+          - fan
           multiple: false
     virtual_button1:
       name: Virtual Button 1 Entity
@@ -144,7 +144,7 @@ variables:
   button2_led_control: !input button2_led_control
   button3_led_control: !input button3_led_control
   button4_led_control: !input button4_led_control
-  fan_switch: !input fan_switch
+  fan_entity: !input fan_entity
   virtual_button1: !input virtual_button1
   virtual_button2: !input virtual_button2
   virtual_button3: !input virtual_button3
@@ -224,22 +224,22 @@ trigger:
 - platform: device
   type: turned_off
   device_id: !input scene_controller
-  entity_id: !input fan_switch
+  entity_id: !input fan_entity
   id: turned_off
-  domain: switch
+  domain: fan
 
 - platform: device
   type: turned_on
   device_id: !input scene_controller
-  entity_id: !input fan_switch
+  entity_id: !input fan_entity
   id: turned_on
-  domain: switch
+  domain: fan
 
 - platform: event
   event_type: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
   event_data:
     scene_controller: !input scene_controller
-    fan_switch: !input fan_switch
+    fan_entity: !input fan_entity
     fan_timer: !input fan_timer
     new_state: CALCULATE_TIMER_BUTTON
   id: state_CALCULATE_TIMER_BUTTON
@@ -248,7 +248,7 @@ trigger:
   event_type: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
   event_data:
     scene_controller: !input scene_controller
-    fan_switch: !input fan_switch
+    fan_entity: !input fan_entity
     fan_timer: !input fan_timer
     new_state: 'IS_OFF'
   id: state_IS_OFF
@@ -257,7 +257,7 @@ trigger:
   event_type: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
   event_data:
     scene_controller: !input scene_controller
-    fan_switch: !input fan_switch
+    fan_entity: !input fan_entity
     fan_timer: !input fan_timer
     new_state: 'TURN_OFF'
   id: state_TURN_OFF
@@ -266,7 +266,7 @@ trigger:
   event_type: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
   event_data:
     scene_controller: !input scene_controller
-    fan_switch: !input fan_switch
+    fan_entity: !input fan_entity
     fan_timer: !input fan_timer
     new_state: ON_NO_TIME
   id: state_ON_NO_TIME
@@ -275,7 +275,7 @@ trigger:
   event_type: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
   event_data:
     scene_controller: !input scene_controller
-    fan_switch: !input fan_switch
+    fan_entity: !input fan_entity
     fan_timer: !input fan_timer
     new_state: BUTTON4
   id: state_BUTTON4
@@ -284,7 +284,7 @@ trigger:
   event_type: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
   event_data:
     scene_controller: !input scene_controller
-    fan_switch: !input fan_switch
+    fan_entity: !input fan_entity
     fan_timer: !input fan_timer
     new_state: BUTTON3
   id: state_BUTTON3
@@ -293,7 +293,7 @@ trigger:
   event_type: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
   event_data:
     scene_controller: !input scene_controller
-    fan_switch: !input fan_switch
+    fan_entity: !input fan_entity
     fan_timer: !input fan_timer
     new_state: BUTTON2
   id: state_BUTTON2
@@ -302,7 +302,7 @@ trigger:
   event_type: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
   event_data:
     scene_controller: !input scene_controller
-    fan_switch: !input fan_switch
+    fan_entity: !input fan_entity
     fan_timer: !input fan_timer
     new_state: BUTTON1
   id: state_BUTTON1
@@ -321,7 +321,7 @@ action:
     data_template:
       level: debug
       logger: zen32_exhaust_fan_blueprint
-      message: 'Entered state {{ trigger.event.data.new_state }} for {{ fan_switch
+      message: 'Entered state {{ trigger.event.data.new_state }} for {{ fan_entity
         }} with scene controller {{ scene_controller }}.'
 
 - choose:
@@ -333,7 +333,7 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Trigger State_CALCULATE_TIMER_BUTTON is calculating which button to use for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Trigger State_CALCULATE_TIMER_BUTTON is calculating which button to use for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - choose:
       - conditions:
         - condition: template
@@ -344,7 +344,7 @@ action:
         - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
           event_data:
             scene_controller: !input scene_controller
-            fan_switch: !input fan_switch
+            fan_entity: !input fan_entity
             fan_timer: !input fan_timer
             new_state: BUTTON4
 
@@ -357,7 +357,7 @@ action:
         - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
           event_data:
             scene_controller: !input scene_controller
-            fan_switch: !input fan_switch
+            fan_entity: !input fan_entity
             fan_timer: !input fan_timer
             new_state: BUTTON3
 
@@ -370,7 +370,7 @@ action:
         - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
           event_data:
             scene_controller: !input scene_controller
-            fan_switch: !input fan_switch
+            fan_entity: !input fan_entity
             fan_timer: !input fan_timer
             new_state: BUTTON2
 
@@ -383,7 +383,7 @@ action:
         - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
           event_data:
             scene_controller: !input scene_controller
-            fan_switch: !input fan_switch
+            fan_entity: !input fan_entity
             fan_timer: !input fan_timer
             new_state: BUTTON1
 
@@ -392,7 +392,7 @@ action:
         data_template:
           level: error
           logger: zen32_exhaust_fan_blueprint
-          message: '"Unable to compute proper state for {{ trigger.id }} for {{ fan_switch
+          message: '"Unable to compute proper state for {{ trigger.id }} for {{ fan_entity
             }} with scene controller {{ scene_controller }}."'
 
   - conditions:
@@ -403,7 +403,7 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Trigger State_IS_OFF is resetting button lights for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Trigger State_IS_OFF is resetting button lights for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - if:
       - condition: not
         conditions:
@@ -485,7 +485,7 @@ action:
         data_template:
           level: debug
           logger: zen32_exhaust_fan_blueprint
-          message: "Trigger State_IS_OFF is cancelling timer for {{ fan_switch }} with scene controller {{ scene_controller }}."
+          message: "Trigger State_IS_OFF is cancelling timer for {{ fan_entity }} with scene controller {{ scene_controller }}."
       - service: timer.cancel
         target:
           entity_id: !input fan_timer
@@ -497,17 +497,17 @@ action:
     sequence:
     - if:
       - condition: state
-        entity_id: !input fan_switch
+        entity_id: !input fan_entity
         state: 'on'
       then:
       - service: system_log.write
         data_template:
           level: debug
           logger: zen32_exhaust_fan_blueprint
-          message: "Trigger State_TURN_OFF is turning off switch for {{ fan_switch }} with scene controller {{ scene_controller }}."
-      - service: switch.turn_off
+          message: "Trigger State_TURN_OFF is turning off switch for {{ fan_entity }} with scene controller {{ scene_controller }}."
+      - service: fan.turn_off
         target:
-          entity_id: !input fan_switch
+          entity_id: !input fan_entity
         data: {}
 
   - conditions:
@@ -518,7 +518,7 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Trigger State_ON_NO_TIME is resetting button lights for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Trigger State_ON_NO_TIME is resetting button lights for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - if:
       - condition: not
         conditions:
@@ -600,7 +600,7 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Trigger State_BUTTON4 is setting button lights for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Trigger State_BUTTON4 is setting button lights for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - if:
       - condition: not
         conditions:
@@ -677,14 +677,14 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Trigger State_BUTTON4 is delaying with timer for {{ button4_duration }} for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Trigger State_BUTTON4 is delaying with timer for {{ button4_duration }} for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - delay:
         seconds: '{{ (as_timestamp(as_datetime(state_attr(fan_timer, ''finishes_at''))
           - timedelta(seconds=button3_duration)) - as_timestamp(now())) | int }}'
     - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
       event_data:
         scene_controller: !input scene_controller
-        fan_switch: !input fan_switch
+        fan_entity: !input fan_entity
         fan_timer: !input fan_timer
         new_state: BUTTON3
 
@@ -696,7 +696,7 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Trigger State_BUTTON3 is setting button lights for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Trigger State_BUTTON3 is setting button lights for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - if:
       - condition: not
         conditions:
@@ -773,14 +773,14 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Trigger State_BUTTON3 is delaying with timer for {{ button3_duration }} for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Trigger State_BUTTON3 is delaying with timer for {{ button3_duration }} for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - delay:
         seconds: '{{ (as_timestamp(as_datetime(state_attr(fan_timer, ''finishes_at''))
           - timedelta(seconds=button2_duration)) - as_timestamp(now())) | int }}'
     - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
       event_data:
         scene_controller: !input scene_controller
-        fan_switch: !input fan_switch
+        fan_entity: !input fan_entity
         fan_timer: !input fan_timer
         new_state: BUTTON2
 
@@ -792,7 +792,7 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Trigger State_BUTTON2 is setting button lights for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Trigger State_BUTTON2 is setting button lights for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - if:
       - condition: not
         conditions:
@@ -869,14 +869,14 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Trigger State_BUTTON2 is delaying with timer for {{ button2_duration }} for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Trigger State_BUTTON2 is delaying with timer for {{ button2_duration }} for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - delay:
         seconds: '{{ (as_timestamp(as_datetime(state_attr(fan_timer, ''finishes_at''))
           - timedelta(seconds=button1_duration)) - as_timestamp(now())) | int }}'
     - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
       event_data:
         scene_controller: !input scene_controller
-        fan_switch: !input fan_switch
+        fan_entity: !input fan_entity
         fan_timer: !input fan_timer
         new_state: BUTTON1
 
@@ -888,7 +888,7 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Trigger State_BUTTON1 is setting button lights for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Trigger State_BUTTON1 is setting button lights for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - if:
       - condition: not
         conditions:
@@ -965,7 +965,7 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Trigger State_BUTTON1 is delaying with timer for {{ button1_duration }} for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Trigger State_BUTTON1 is delaying with timer for {{ button1_duration }} for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - delay:
         seconds: '{{ (as_timestamp(state_attr(fan_timer, ''finishes_at'')) - as_timestamp(now()))
           | int }}'
@@ -973,11 +973,11 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Timer expired Button 1 time for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Timer expired Button 1 time for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
       event_data:
         scene_controller: !input scene_controller
-        fan_switch: !input fan_switch
+        fan_entity: !input fan_entity
         fan_timer: !input fan_timer
         new_state: 'TURN_OFF'
 
@@ -989,7 +989,7 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Starting timer for Button 4 duration for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Starting timer for Button 4 duration for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - service: timer.start
       data:
         duration: "{{ button4_duration }}"
@@ -997,22 +997,22 @@ action:
         entity_id: !input fan_timer
     - if:
       - condition: state
-        entity_id: !input fan_switch
+        entity_id: !input fan_entity
         state: 'off'
       then:
-      - service: switch.turn_on
+      - service: fan.turn_on
         target:
-          entity_id: !input fan_switch
+          entity_id: !input fan_entity
         data: {}
     - service: system_log.write
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Switching State to BUTTON4 for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Switching State to BUTTON4 for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
       event_data:
         scene_controller: !input scene_controller
-        fan_switch: !input fan_switch
+        fan_entity: !input fan_entity
         fan_timer: !input fan_timer
         new_state: BUTTON4
 
@@ -1024,7 +1024,7 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Starting timer for Button 3 duration for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Starting timer for Button 3 duration for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - service: timer.start
       data:
         duration: "{{ button3_duration }}"
@@ -1032,22 +1032,22 @@ action:
         entity_id: !input fan_timer
     - if:
       - condition: state
-        entity_id: !input fan_switch
+        entity_id: !input fan_entity
         state: 'off'
       then:
-      - service: switch.turn_on
+      - service: fan.turn_on
         target:
-          entity_id: !input fan_switch
+          entity_id: !input fan_entity
         data: {}
     - service: system_log.write
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Switching State to BUTTON3 for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Switching State to BUTTON3 for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
       event_data:
         scene_controller: !input scene_controller
-        fan_switch: !input fan_switch
+        fan_entity: !input fan_entity
         fan_timer: !input fan_timer
         new_state: BUTTON3
 
@@ -1059,7 +1059,7 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Starting timer for Button 2 duration for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Starting timer for Button 2 duration for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - service: timer.start
       data:
         duration: "{{ button2_duration }}"
@@ -1067,22 +1067,22 @@ action:
         entity_id: !input fan_timer
     - if:
       - condition: state
-        entity_id: !input fan_switch
+        entity_id: !input fan_entity
         state: 'off'
       then:
-      - service: switch.turn_on
+      - service: fan.turn_on
         target:
-          entity_id: !input fan_switch
+          entity_id: !input fan_entity
         data: {}
     - service: system_log.write
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Switching State to BUTTON2 for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Switching State to BUTTON2 for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
       event_data:
         scene_controller: !input scene_controller
-        fan_switch: !input fan_switch
+        fan_entity: !input fan_entity
         fan_timer: !input fan_timer
         new_state: BUTTON2
 
@@ -1094,7 +1094,7 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Starting timer for Button 1 duration for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Starting timer for Button 1 duration for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - service: timer.start
       data:
         duration: "{{ button1_duration }}"
@@ -1102,22 +1102,22 @@ action:
         entity_id: !input fan_timer
     - if:
       - condition: state
-        entity_id: !input fan_switch
+        entity_id: !input fan_entity
         state: 'off'
       then:
-      - service: switch.turn_on
+      - service: fan.turn_on
         target:
-          entity_id: !input fan_switch
+          entity_id: !input fan_entity
         data: {}
     - service: system_log.write
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Switching State to BUTTON1 for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Switching State to BUTTON1 for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
       event_data:
         scene_controller: !input scene_controller
-        fan_switch: !input fan_switch
+        fan_entity: !input fan_entity
         fan_timer: !input fan_timer
         new_state: BUTTON1
 
@@ -1129,11 +1129,11 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Timer active (unknown) for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Timer active (unknown) for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
       event_data:
         scene_controller: !input scene_controller
-        fan_switch: !input fan_switch
+        fan_entity: !input fan_entity
         fan_timer: !input fan_timer
         new_state: CALCULATE_TIMER_BUTTON
 
@@ -1150,11 +1150,11 @@ action:
 #        data_template:
 #          level: debug
 #          logger: zen32_exhaust_fan_blueprint
-#          message: "Timer active (unknown) for {{ fan_switch }} with scene controller {{ scene_controller }}."
+#          message: "Timer active (unknown) for {{ fan_entity }} with scene controller {{ scene_controller }}."
 #      - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
 #        event_data:
 #          scene_controller: !input scene_controller
-#          fan_switch: !input fan_switch
+#          fan_entity: !input fan_entity
 #          fan_timer: !input fan_timer
 #          new_state: CALCULATE_TIMER_BUTTON
 #    - if:
@@ -1166,11 +1166,11 @@ action:
 #        data_template:
 #          level: debug
 #          logger: zen32_exhaust_fan_blueprint
-#          message: "Timer idle for {{ fan_switch }} with scene controller {{ scene_controller }}."
+#          message: "Timer idle for {{ fan_entity }} with scene controller {{ scene_controller }}."
 #      - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
 #        event_data:
 #          scene_controller: !input scene_controller
-#          fan_switch: !input fan_switch
+#          fan_entity: !input fan_entity
 #          fan_timer: !input fan_timer
 #          new_state: 'OFF'
 
@@ -1182,16 +1182,16 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Timer idle for {{ fan_switch }} with scene controller {{ scene_controller }}."
+        message: "Timer idle for {{ fan_entity }} with scene controller {{ scene_controller }}."
     - if:
       - condition: state
-        entity_id: !input fan_switch
+        entity_id: !input fan_entity
         state: 'on'
       then:
       - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
         event_data:
           scene_controller: !input scene_controller
-          fan_switch: !input fan_switch
+          fan_entity: !input fan_entity
           fan_timer: !input fan_timer
           new_state: 'TURN_OFF'
 
@@ -1203,11 +1203,11 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Switch reports device turned OFF for {{ fan_switch }} with scene controller {{ scene_controller }}.."
+        message: "Switch reports device turned OFF for {{ fan_entity }} with scene controller {{ scene_controller }}.."
     - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
       event_data:
         scene_controller: !input scene_controller
-        fan_switch: !input fan_switch
+        fan_entity: !input fan_entity
         fan_timer: !input fan_timer
         new_state: 'IS_OFF'
 
@@ -1219,7 +1219,7 @@ action:
       data_template:
         level: debug
         logger: zen32_exhaust_fan_blueprint
-        message: "Reached trigger turned_on for {{ fan_switch }} with scene controller {{ scene_controller }}.."
+        message: "Reached trigger turned_on for {{ fan_entity }} with scene controller {{ scene_controller }}.."
     - if:
       - condition: state
         entity_id: !input fan_timer
@@ -1229,11 +1229,11 @@ action:
         data_template:
           level: debug
           logger: zen32_exhaust_fan_blueprint
-          message: "Switch reports device turned ON without timer for {{ fan_switch }} with scene controller {{ scene_controller }}.."
+          message: "Switch reports device turned ON without timer for {{ fan_entity }} with scene controller {{ scene_controller }}.."
       - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
         event_data:
           scene_controller: !input scene_controller
-          fan_switch: !input fan_switch
+          fan_entity: !input fan_entity
           fan_timer: !input fan_timer
           new_state: ON_NO_TIME
     - if:
@@ -1244,7 +1244,7 @@ action:
       - event: ZEN32_EXHAUST_FAN_BLUEPRINT_STATE_CHANGE
         event_data:
           scene_controller: !input scene_controller
-          fan_switch: !input fan_switch
+          fan_entity: !input fan_entity
           fan_timer: !input fan_timer
           new_state: CALCULATE_TIMER_BUTTON
 
@@ -1253,7 +1253,7 @@ action:
     data_template:
       level: error
       logger: zen32_exhaust_fan_blueprint
-      message: '"Unexpected default for trigger {{ trigger.id }} for {{ fan_switch
+      message: '"Unexpected default for trigger {{ trigger.id }} for {{ fan_entity
         }} with scene controller {{ scene_controller }}."'
 
 mode: restart
