@@ -11,7 +11,7 @@ You can also see the discussion about the original version of this Blueprint [in
 * Scene Controller device (Zooz Zen32 - either 700 or 800 series)
 * Enable all 5 entities for LED Control - this allows for LED states to be read and only changed if required
 * Enable entitity for relay LED Colour control - this allows the big button LED light colour to be read and only changed if required
-* Fan Switch entity
+* Fan entity - note change default settings of "switch" to "fan"
 * Virtual Button (helper) Entities for each of the four scene buttons - Allows for mockup of panel for testing via Lovelace GUI
 * Fan timer (helper) entity
 * Maximum fan-on duration (e.g. 30 minutes, 60 minutes) - Timers are calculated based on this value. Timer 1 is 1/6 of the value, Timer 2 is 1/3, TImer 3 is 1/2, Timer 4 is 1/1
